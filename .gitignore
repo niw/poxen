@@ -1,0 +1,10 @@
+.DS_Store
+/.gems
+/.bundle
+/.librarian
+/.tmp
+/bin
+/log/*.log
+/shared
+/vendor/bundle
+/vendor/puppet

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Fail to exit.
+set -e
+
+# Change current directory.
+CURRENT_DIR="$(cd -P "$(dirname "$0")/.."; pwd)"
+cd "$CURRENT_DIR"
+
+# Set GEM_HOME to isolate gems.
+export GEM_HOME="$CURRENT_DIR/.gems"
+mkdir -p "$GEM_HOME"
+
+# Install Bundler, if it's not present.
+(/usr/bin/gem list -i bundler -v "~> 1.3.0" > /dev/null) || {
+  /usr/bin/gem install --no-rdoc --no-ri bundler
+}
+
+# Install Ruby dependencies using local Bundler.
+# All dependencies are managed by Bundler except Bundler itself,
+# Forced to use a stub ruby to run commands in the appropriate environment.
+($GEM_HOME/bin/bundle check > /dev/null) || {
+  $GEM_HOME/bin/bundle install \
+    --without development \
+    --binstubs bin \
+    --shebang "$CURRENT_DIR/script/ruby" \
+    --path vendor/bundle
+}
+
+# Install Puppet modules using librarian-puppet.
+bin/librarian-puppet install --path=shared
+
+# Prepare for Puppet.
+PUPPET_DIR=/tmp/poxen/puppet
+mkdir -p "$PUPPET_DIR"
+
+# The log path must be a absolute path.
+LOG_DIR="$CURRENT_DIR/log"
+mkdir -p "$LOG_DIR"
+
+# Now, we're all set. Apply Puppet.
+sudo -p "Password for sudo to run puppet: " \
+  bin/puppet apply \
+  --group admin \
+  --confdir "$PUPPET_DIR/conf" \
+  --confdir "$PUPPET_DIR/var" \
+  --libdir lib \
+  --modulepath modules:shared \
+  --hiera_config /dev/null \
+  --logdest "$LOG_DIR/puppet.log" \
+  --logdest console \
+  --no-report \
+  --detailed-exitcodes \
+  --show_diff \
+  manifests/site.pp \
+  "$@"

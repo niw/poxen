@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# This is a thin stub ruby command running with local GEM_HOME.
+CURRENT_DIR="$(cd -P "$(dirname "$0")/.."; pwd)"
+export GEM_HOME="${CURRENT_DIR}/.gems"
+
+exec /usr/bin/ruby "$@"
