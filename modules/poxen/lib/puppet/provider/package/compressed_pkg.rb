@@ -29,7 +29,8 @@ Puppet::Type.type(:package).provide(:compressed_pkg, :parent => Puppet::Provider
 
   commands :curl => "/usr/bin/curl",
            :unzip => "/usr/bin/unzip",
-           :tar => "/usr/bin/tar"
+           :tar => "/usr/bin/tar",
+           :mv => "/bin/mv"
 
   def self.pkg_source_types
     @pkg_source_types ||= %w(zip tar.gz tar.bz2 tgz tbz)
@@ -74,12 +75,10 @@ Puppet::Type.type(:package).provide(:compressed_pkg, :parent => Puppet::Provider
   private
 
   def install_compressed_pkg(name, source, flavor = nil)
-    unless source_type = flavor || source_type_for(source)
-      self.fail "Source must be one of .zip, .tar.gz, .tgz, .tar.bz2, .tbz"
-    end
+    source_type = flavor || source_type_for(source)
 
     tmpdir = Dir.mktmpdir
-    cached_source = File.join(tmpdir, "#{name}.pkg.#{source_type}")
+    cached_source = File.join(tmpdir, "#{name}.pkg#{source_type ? ".#{source_type}" : ""}")
 
     curl "-o", cached_source, "-C", "-", "-L", "-s", source
 
@@ -90,6 +89,8 @@ Puppet::Type.type(:package).provide(:compressed_pkg, :parent => Puppet::Provider
       tar "-zxf", cached_source, "-C", tmpdir
     when 'tar.bz2', 'tbz'
       tar "-jxf", cached_source, "-C", tmpdir
+    else
+      mv cached_source, tmpdir
     end
 
     packages = list_packages(tmpdir)
