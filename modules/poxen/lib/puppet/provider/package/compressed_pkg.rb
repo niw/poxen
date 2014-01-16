@@ -29,8 +29,7 @@ Puppet::Type.type(:package).provide(:compressed_pkg, :parent => Puppet::Provider
 
   commands :curl => "/usr/bin/curl",
            :unzip => "/usr/bin/unzip",
-           :tar => "/usr/bin/tar",
-           :mv => "/bin/mv"
+           :tar => "/usr/bin/tar"
 
   def self.pkg_source_types
     @pkg_source_types ||= %w(zip tar.gz tar.bz2 tgz tbz)
@@ -89,8 +88,6 @@ Puppet::Type.type(:package).provide(:compressed_pkg, :parent => Puppet::Provider
       tar "-zxf", cached_source, "-C", tmpdir
     when 'tar.bz2', 'tbz'
       tar "-jxf", cached_source, "-C", tmpdir
-    else
-      mv cached_source, tmpdir
     end
 
     packages = list_packages(tmpdir)
