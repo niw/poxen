@@ -7,8 +7,9 @@ set -e
 CURRENT_DIR="$(cd -P "$(dirname "$0")/.."; pwd)"
 cd "$CURRENT_DIR"
 
-# Set GEM_HOME to isolate gems.
+# Set GEM_HOME and GEM_PATH to isolate gems.
 export GEM_HOME="$CURRENT_DIR/.gems"
+export GEM_PATH="$GEM_HOME"
 mkdir -p "$GEM_HOME"
 
 # Install Bundler, if it's not present.
