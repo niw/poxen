@@ -4,7 +4,7 @@
 /.librarian
 /.tmp
 /bin
-/log/*.log
+/log
 /shared
 /vendor/bundle
 /vendor/puppet
