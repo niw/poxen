@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-gem "librarian-puppet", "~> 0.9.9"
-gem "puppet", "3.3.1"
+gem "librarian-puppet", "~> 2.0.0"
+gem "puppet", "~> 3.7.1"
 
 group :development do
   gem "rake"
