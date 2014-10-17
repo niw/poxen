@@ -7,7 +7,7 @@ def boxen(name, *args)
   mod name, *args
 end
 
-mod "stdlib", "4.1.0", :github_tarball => "puppetlabs/puppetlabs-stdlib"
+mod "stdlib", "4.3.2", :github_tarball => "puppetlabs/puppetlabs-stdlib"
 
-boxen "repository", "2.2.0"
-boxen "osx", "2.2.0"
+boxen "repository", "2.3.0"
+boxen "osx", "2.7.1"
