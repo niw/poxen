@@ -14,7 +14,7 @@ mkdir -p "$GEM_HOME"
 
 # Install Bundler, if it's not present.
 (/usr/bin/gem list -i bundler -v "~> 1.3" > /dev/null) || {
-  /usr/bin/gem install --no-rdoc --no-ri bundler
+  /usr/bin/gem install --no-rdoc --no-ri bundler -v "~> 1.3"
 }
 
 # Install Ruby dependencies using local Bundler.
