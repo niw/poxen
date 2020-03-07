@@ -7,21 +7,11 @@ set -e
 CURRENT_DIR="$(cd -P "$(dirname "$0")/.."; pwd)"
 cd "$CURRENT_DIR"
 
-# Set GEM_HOME and GEM_PATH to isolate gems.
-export GEM_HOME="$CURRENT_DIR/.gems"
-export GEM_PATH="$GEM_HOME"
-mkdir -p "$GEM_HOME"
-
-# Install Bundler, if it's not present.
-(/usr/bin/gem list -i bundler -v "~> 1.3" > /dev/null) || {
-  /usr/bin/gem install --no-rdoc --no-ri bundler -v "~> 1.3"
-}
-
 # Install Ruby dependencies using local Bundler.
 # All dependencies are managed by Bundler except Bundler itself,
 # Forced to use a stub ruby to run commands in the appropriate environment.
-($GEM_HOME/bin/bundle check > /dev/null) || {
-  $GEM_HOME/bin/bundle install \
+(/usr/bin/bundle check > /dev/null) || {
+  /usr/bin/bundle install \
     --without development \
     --binstubs bin \
     --shebang "$CURRENT_DIR/script/ruby" \
